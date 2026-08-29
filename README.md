@@ -11,17 +11,31 @@
 
 If any of these is you, the problem is not your prompt. It's that the compactor runs as a separate call with its own system prompt, and none of your customization reaches it.
 
-## The numbers (our measurements, July 2026)
+## The numbers (our measurements, re-run 2026-08-29 on CLI up to 2.1.246)
 
 | Measurement | Result |
 |---|---|
-| Bare `/compact` runs that applied our `CLAUDE.md` "Compact Instructions" section | **0 / 354** |
-| Same runs falling back to the stock English template | **354 / 354** |
-| Custom headers surviving when the block is pasted **inline** after `/compact` | **7 / 7** |
-| Seeded facts surviving compaction (paths, chat IDs, counters, one rejected decision) | **15 / 15** |
-| Token squeeze in the live verification run | **54,358 → 2,522** |
+| Compactions with **no** inline block that applied our `CLAUDE.md` "Compact Instructions" section | **0 / 447** |
+| - of those, bare `/compact` (empty args) | 0 / 380 |
+| - of those, auto-compact (instructions structurally impossible) | 0 / 39 |
+| - of those, `/compact` with free-text args that were not the block | 0 / 28 |
+| Runs where the full block **was** pasted inline and the 7 headers came back | **5 / 9** (recent CLIs: 4 / 5) |
+| Seeded facts surviving a successful block run (paths, chat IDs, counters, one rejected decision) | **15 / 15** |
+| Token squeeze in the live verification run | **54,358 -> 2,522** |
 
-Dataset: one machine's complete transcript archive (JSONL, `compactMetadata` / `isCompactSummary` markers), plus live verification on Claude Code CLI 2.1.186 — both headless (`claude -p --resume`) and in a real interactive session. Full method and repro protocol: [MEASUREMENTS.md](MEASUREMENTS.md).
+Dataset: 16,107 transcript files, 456 compaction events, CLI 2.1.161 -> 2.1.246, 2026-06-06 -> 2026-08-29,
+plus the July live verification on CLI 2.1.186 in both a headless and a real interactive session.
+
+⚠️ **Two honest corrections to our own earlier claims**, both found by re-running this in August
+after the maintainer of [netresearch/retro-skill](https://github.com/netresearch/retro-skill/issues/78)
+rightly pointed out that a stale scan settles nothing:
+
+- The inline block is **reliable, not deterministic** - 5 of 9 lifetime, 4 of 5 on recent CLIs. We
+  previously printed **7/7** from a single live test. A run that misses returns the plain stock template.
+- Our original detector counted a header as present anywhere in the summary, so a stock summary that
+  merely *quotes* the instruction line scored a perfect 7/7. That method claims 67 of 405 bare
+  compactions "worked"; a detector that requires the header to open a line says 0 of 380. Full method,
+  the three defects, and a corrected repro: [MEASUREMENTS.md](MEASUREMENTS.md) section 5.
 
 Why the official paths fail:
 - [anthropics/claude-code#14160](https://github.com/anthropics/claude-code/issues/14160) — custom instructions for auto-compact; closed as duplicate, PreCompact receives **empty** `custom_instructions` on auto-trigger.
