@@ -128,3 +128,26 @@ CLI **2.1.161 → 2.1.246**, 2026-06-06 → 2026-08-29.
 Sanity-check your detector on two fixtures before believing it: a stock summary that quotes all seven
 header names must score **0**, and a real skeleton must score **7**. A detector that cannot tell those
 apart will hand you the 16.5% that is not there.
+
+## 6. Live seeded re-probe, 2026-09-05 (CLI 2.1.246)
+
+Section 5 re-scanned the archive; this section re-ran the *seeded live protocol* (sections 2-3 style)
+on the current CLI, fresh sessions, single run each, print mode, Windows:
+
+| Probe | Result |
+|---|---|
+| `CLAUDE.md` "Compact Instructions" section (unique markers) + bare `/compact` | **0/7 marker headers** in the summary region — section still ignored |
+| Fact survival in that stock summary | 6/15 seeded facts |
+| Inline 7-marker block after `/compact` | **7/7 headers, 15/15 facts** (one more hit for the 5/9-lifetime tally) |
+
+**New in 2.1.246: a minimum-length guard.** A 1-exchange seeded session now gets
+`<local-command-stdout>not enough messages to compact.</local-command-stdout>` and no summary at all —
+the July protocol (seed once, compact immediately) no longer runs as written. Our probe needed a
+5-exchange session before `/compact` would fire. If your rerun of the section 2 checklist "fails",
+check for this string first.
+
+Two transcript-format notes for anyone repro-ing on 2.1.246: `claude -p --resume` appends into the
+same session file (no fork), and judge only the records appended *after* the compact command while
+excluding `attachment` records — the CLAUDE.md attachment is re-inlined every turn, so its marker
+text will hand a naive substring judge a fake 7/7 (the exact false-positive machine from section 5.3;
+it nearly got us a second time).
