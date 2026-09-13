@@ -9,7 +9,7 @@
 - *"After `/compact` it remembers WHAT we did, but not WHY we rejected the other approach."*
 - *"My PreCompact hook runs, but the summary comes out in the same stock template every time."*
 
-If any of these is you, the problem is not your prompt. It's that the compactor runs as a separate call with its own system prompt, and none of your customization reaches it.
+If any of these is you, the problem is not your prompt. It's that the compactor runs as a separate call with its own system prompt, and none of your customization reaches it — the full method behind that finding is in [MEASUREMENTS.md](MEASUREMENTS.md).
 
 ## The numbers (our measurements, re-run 2026-08-29 on CLI up to 2.1.246)
 
@@ -50,7 +50,7 @@ Find your last compaction summary and look at its headers:
 grep -rl '"isCompactSummary":true' ~/.claude/projects/ | head -3
 ```
 
-Open one match. If the summary uses the stock English template sections even though you wrote custom compact instructions somewhere — your instructions never applied. That's the disease this repo treats.
+Open one match. If the summary uses the stock English template sections even though you wrote custom compact instructions somewhere — your instructions never applied, exactly as counted in [MEASUREMENTS.md](MEASUREMENTS.md) section 5. That's the disease this repo treats.
 
 ## How it fixes it
 
@@ -66,13 +66,13 @@ The block is a 7-header preservation order ([COMPACT.md](COMPACT.md)):
 6. **OPEN** — what broke, diverged, or remains
 7. **TOOLS & CONTRACTS** — scripts, versions, APIs, formats touched
 
-Have the agent fill the skeleton with the session's real facts before you paste it — an exact fill-in prompt ships in [COMPACT.md](COMPACT.md).
+Have the agent fill the skeleton with the session's real facts before you paste it — an exact fill-in prompt ships in [COMPACT.md](COMPACT.md). A skeleton pasted unfilled preserves nothing, which is the one way to use this repo wrong.
 
 Honest nuance from the live test: the inline block **supplements** the default template rather than replacing it (both appear in the summary, ~2.5k duplicated tokens). We consider that a fair price for 15/15 fact survival.
 
 ## Design choices
 
-- **Plain text. Zero dependencies. Nothing to install.** No plugin, no hook, no daemon — a text block you paste. If it stops working, you can see why.
+- **Plain text. Zero dependencies. Nothing to install.** No plugin, no hook, no daemon — just the block in [COMPACT.md](COMPACT.md) that you paste. If it stops working, you can see why.
 - **Fail-open:** worst case you get the stock summary you'd have gotten anyway.
 - **Manual `/compact` only.** Auto-compact cannot be steered (see issues above) — so compact deliberately at ~60% context instead of letting auto-compact fire at 95%. Our companion ritual [claw-retro](https://github.com/tonydzi/claw-retro) prints this block for you at every session close, so there is nothing to remember.
 
@@ -85,15 +85,15 @@ Honest nuance from the live test: the inline block **supplements** the default t
 
 ## FAQ
 
-**Why not a PreCompact hook?** It can't inject text — stderr only ([#43733](https://github.com/anthropics/claude-code/issues/43733)).
+**Why not a PreCompact hook?** It cannot inject text into the compactor, only write to stderr ([#43733](https://github.com/anthropics/claude-code/issues/43733)).
 
-**Why not a CLAUDE.md section?** Measured: 0 applications in 354 compactions. The compactor never loads it.
+**Why not a CLAUDE.md section?** Measured 2026-08-29: 0 applications in 354 compactions, method in [MEASUREMENTS.md](MEASUREMENTS.md). The compactor never loads it.
 
 **Does the block replace the stock summary?** No — verified live: it's appended alongside it. Duplication ≈2.5k tokens, tolerable.
 
-**Does this help auto-compact?** No. Nothing does, today. Compact manually at task boundaries; that's the actual discipline this repo encodes.
+**Does this help auto-compact?** No. Nothing does today, because PreCompact gets empty instructions on the auto trigger ([#14160](https://github.com/anthropics/claude-code/issues/14160)). Compact manually at task boundaries; that's the actual discipline this repo encodes.
 
-**Is this Claude-Code-specific?** The measurements are. The 7-header preservation order works anywhere a lossy session summary is written — the categories encode *what dies first*, which is model-agnostic.
+**Is this Claude-Code-specific?** The measurements in [MEASUREMENTS.md](MEASUREMENTS.md) are. The 7-header preservation order works anywhere a lossy session summary is written — the categories encode *what dies first*, which is model-agnostic.
 
 ## Attribution & license
 
