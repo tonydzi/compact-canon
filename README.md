@@ -116,8 +116,6 @@ demo — and it runs on its own: nothing here phones home to the rest.
 
 **See how the whole thing fits together → [SYSTEM.md](https://github.com/tonydzi/tonydzi/blob/main/SYSTEM.md)**
 
-Its closest neighbours in the **memory** layer: [`claw-retro`](https://github.com/tonydzi/claw-retro) · [`always-loaded-diet`](https://github.com/tonydzi/always-loaded-diet) · [`sqlite-graph-memory`](https://github.com/tonydzi/sqlite-graph-memory)
-
 <!--ecosystem-map:end-->
 
 ## AI contributors
