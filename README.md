@@ -34,7 +34,7 @@ Nothing to configure. Do not put the block into `CLAUDE.md`, a hook or settings:
 ### Verify
 Two checks.
 - Behaviour: after compaction, ask "why did we reject <alternative>?" The answer must name the real reason from your DECISIONS header.
-- Optional, to reproduce the detector (read-only): `python artifacts/_test_compact_detect.py`. Expected: exit code 0 and last line `PASS 3/3`.
+- Optional, to check the detector on built-in fixtures (needs the cloned repo, no transcripts are read, nothing is written): `python artifacts/_test_compact_detect.py`. Expected: exit code 0 and last line `PASS 3/3`. This tests the measuring script, not your compact; only the behaviour check above shows the block worked.
 
 ### Uninstall / rollback
 Nothing was installed. Stop pasting the block. Delete the cloned folder if you made one.
@@ -88,7 +88,7 @@ rightly pointed out that a stale scan settles nothing:
 Why the official paths fail:
 - [anthropics/claude-code#14160](https://github.com/anthropics/claude-code/issues/14160) — custom instructions for auto-compact; closed as duplicate, PreCompact receives **empty** `custom_instructions` on auto-trigger.
 - [anthropics/claude-code#43733](https://github.com/anthropics/claude-code/issues/43733) — PreCompact injection; closed *not planned*, the hook can only emit stderr.
-- The `CLAUDE.md` section approach recommended by several blogs: measured **0/354** above. 🤔 The `compactPrompt` settings key circulating in posts is unverified folklore as far as we can tell.
+- The `CLAUDE.md` section approach recommended by several blogs: measured **0/447** above. 🤔 The `compactPrompt` settings key circulating in posts is unverified folklore as far as we can tell.
 
 ## Self-diagnosis in 30 seconds
 
@@ -135,7 +135,7 @@ Honest nuance from the live test: the inline block **supplements** the default t
 
 **Why not a PreCompact hook?** It cannot inject text into the compactor, only write to stderr ([#43733](https://github.com/anthropics/claude-code/issues/43733)).
 
-**Why not a CLAUDE.md section?** Measured 2026-08-29: 0 applications in 354 compactions, method in [MEASUREMENTS.md](MEASUREMENTS.md). The compactor never loads it.
+**Why not a CLAUDE.md section?** Measured 2026-08-29: 0 applications in 447 compactions without an inline block (the first 2026-07-22 run saw 0 of 354), method in [MEASUREMENTS.md](MEASUREMENTS.md). The compactor never loads it.
 
 **Does the block replace the stock summary?** No — verified live: it's appended alongside it. Duplication ≈2.5k tokens, tolerable.
 
