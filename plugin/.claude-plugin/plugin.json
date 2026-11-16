@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "compact-canon",
+  "displayName": "compact-canon",
+  "version": "0.1.0",
+  "description": "Prints a filled 7-header block to paste after /compact in Claude Code, so the summary keeps decisions, their reasons, exact paths and values. Instructions only: this plugin runs nothing and cannot run /compact for you.",
+  "author": {
+    "name": "Anton Dziatkovskii",
+    "url": "https://github.com/tonydzi"
+  },
+  "homepage": "https://github.com/tonydzi/compact-canon",
+  "repository": "https://github.com/tonydzi/compact-canon",
+  "license": "MIT",
+  "keywords": [
+    "compact",
+    "context",
+    "claude-code",
+    "summary",
+    "session-memory"
+  ],
+  "privacyPolicyUrl": "https://github.com/tonydzi/compact-canon/blob/main/PRIVACY.md",
+  "skills": "./skills/"
+}
